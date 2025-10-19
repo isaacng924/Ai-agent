@@ -1,0 +1,298 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HR Lookup Tool Contract",
+  "description": "Gateway tool contract for HR contact discovery via Bedrock AgentCore",
+  "type": "object",
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HR Lookup Tool",
+    "version": "1.0.0",
+    "description": "Tool for discovering HR and recruiter contacts for job postings"
+  },
+  "paths": {
+    "/search": {
+      "post": {
+        "summary": "Search for HR contacts",
+        "description": "Searches for relevant HR or recruiter contacts for a given company and job title using web search APIs",
+        "operationId": "search_hr_contacts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SearchRequest": {
+        "type": "object",
+        "required": ["company_name", "job_title"],
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "Official company name to search for",
+            "minLength": 1,
+            "maxLength": 200,
+            "example": "Anthropic"
+          },
+          "job_title": {
+            "type": "string",
+            "description": "Job title or role name for context",
+            "minLength": 1,
+            "maxLength": 200,
+            "example": "AI Safety Researcher"
+          },
+          "job_description": {
+            "type": "string",
+            "description": "Optional job description for better matching",
+            "maxLength": 5000,
+            "example": "Research alignment techniques for large language models"
+          },
+          "search_depth": {
+            "type": "string",
+            "enum": ["basic", "advanced"],
+            "description": "Search depth (basic=fast, advanced=comprehensive)",
+            "default": "basic"
+          },
+          "use_cache": {
+            "type": "boolean",
+            "description": "Whether to use cached results if available",
+            "default": true
+          }
+        }
+      },
+      "SearchResponse": {
+        "type": "object",
+        "required": ["success", "search_duration_seconds"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the search was successful"
+          },
+          "contacts": {
+            "type": "array",
+            "description": "List of discovered HR contacts (empty if none found)",
+            "items": {
+              "$ref": "#/components/schemas/HRContact"
+            }
+          },
+          "search_duration_seconds": {
+            "type": "number",
+            "description": "Time taken for the search",
+            "minimum": 0.0
+          },
+          "search_query": {
+            "type": "string",
+            "description": "The actual search query used"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["tavily", "serper", "cached", "mock"],
+            "description": "Which search provider was used"
+          },
+          "cache_hit": {
+            "type": "boolean",
+            "description": "Whether result was retrieved from cache"
+          },
+          "error_message": {
+            "type": "string",
+            "description": "Error message if search failed but didn't raise exception"
+          },
+          "suggestions": {
+            "type": "array",
+            "description": "Suggestions if no contacts found",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "HRContact": {
+        "type": "object",
+        "required": ["name", "role", "company", "source", "confidence_score"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the HR contact",
+            "minLength": 1,
+            "maxLength": 200,
+            "example": "Jane Smith"
+          },
+          "role": {
+            "type": "string",
+            "description": "Job title at the company",
+            "minLength": 1,
+            "maxLength": 200,
+            "example": "Engineering Recruiter"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name",
+            "minLength": 1,
+            "maxLength": 200,
+            "example": "Anthropic"
+          },
+          "profile_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "LinkedIn or professional network URL",
+            "example": "https://linkedin.com/in/janesmith"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["linkedin", "company_website", "web_search", "cached", "inferred"],
+            "description": "How this contact was discovered"
+          },
+          "confidence_score": {
+            "type": "number",
+            "description": "Confidence in contact relevance (0.0-1.0)",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "example": 0.9
+          },
+          "additional_info": {
+            "type": "object",
+            "description": "Optional metadata about the contact",
+            "additionalProperties": true,
+            "example": {
+              "department": "Engineering",
+              "recent_activity": "Posted about AI hiring 2 weeks ago"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error", "message"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error code",
+            "example": "RATE_LIMIT_EXCEEDED"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Search API rate limit exceeded. Please try again in 60 seconds."
+          },
+          "retry_after_seconds": {
+            "type": "integer",
+            "description": "Suggested retry delay in seconds",
+            "example": 60
+          }
+        }
+      }
+    }
+  },
+  "examples": {
+    "successful_search": {
+      "request": {
+        "company_name": "Anthropic",
+        "job_title": "AI Safety Researcher",
+        "search_depth": "advanced",
+        "use_cache": true
+      },
+      "response": {
+        "success": true,
+        "contacts": [
+          {
+            "name": "Jane Smith",
+            "role": "Engineering Recruiter",
+            "company": "Anthropic",
+            "profile_url": "https://linkedin.com/in/janesmith",
+            "source": "linkedin",
+            "confidence_score": 0.9,
+            "additional_info": {
+              "department": "Engineering",
+              "recent_activity": "Posted about AI hiring 2 weeks ago"
+            }
+          }
+        ],
+        "search_duration_seconds": 12.5,
+        "search_query": "Anthropic recruiter AI Safety site:linkedin.com",
+        "source": "tavily",
+        "cache_hit": false
+      }
+    },
+    "no_contact_found": {
+      "request": {
+        "company_name": "SmallStartup Inc",
+        "job_title": "Engineer",
+        "search_depth": "basic",
+        "use_cache": false
+      },
+      "response": {
+        "success": true,
+        "contacts": [],
+        "search_duration_seconds": 5.2,
+        "search_query": "SmallStartup Inc HR recruiter site:linkedin.com",
+        "source": "tavily",
+        "cache_hit": false,
+        "error_message": "No public HR presence found",
+        "suggestions": [
+          "Check the company's careers page for a contact form",
+          "Try reaching out directly to the founder on LinkedIn"
+        ]
+      }
+    },
+    "rate_limit_error": {
+      "request": {
+        "company_name": "TechCorp",
+        "job_title": "Software Engineer"
+      },
+      "response": {
+        "error": "RATE_LIMIT_EXCEEDED",
+        "message": "Search API rate limit exceeded. Please try again in 60 seconds.",
+        "retry_after_seconds": 60
+      }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+[
+  {
+    "name": "Sarah Chen",
+    "role": "Senior Technical Recruiter - AI Research",
+    "company": "Anthropic",
+    "profile_url": "https://linkedin.com/in/sarahchen-recruiter",
+    "source": "linkedin",
+    "confidence_score": 0.95,
+    "additional_info": {
+      "department": "Research",
+      "recent_activity": "Posted about AI safety hiring 1 week ago",
+      "years_at_company": 2,
+      "specialization": "PhD-level AI researchers"
+    }
+  },
+  {
+    "name": "James Rodriguez",
+    "role": "Technical Recruiting Manager - AWS AI/ML",
+    "company": "Amazon Web Services",
+    "profile_url": "https://linkedin.com/in/jamesrodriguez-aws",
+    "source": "linkedin",
+    "confidence_score": 0.88,
+    "additional_info": {
+      "department": "AWS Machine Learning",
+      "recent_activity": "Shared job posting for ML engineers 2 days ago",
+      "team_size": "15+ recruiters",
+      "location": "Seattle, WA"
+    }
+  },
+  {
+    "name": "Emily Watson",
+    "role": "Research Recruiter",
+    "company": "Google DeepMind",
+    "profile_url": "https://linkedin.com/in/emilywatson-deepmind",
+    "source": "company_website",
+    "confidence_score": 0.82,
+    "additional_info": {
+      "department": "Research",
+      "email_available": false,
+      "location": "London, UK"
+    }
+  },
+  {
+    "name": "Michael Kim",
+    "role": "Senior Recruiter - AI & Cloud",
+    "company": "Microsoft",
+    "profile_url": "https://linkedin.com/in/michaelkim-msft",
+    "source": "linkedin",
+    "confidence_score": 0.91,
+    "additional_info": {
+      "department": "Product & Engineering",
+      "recent_activity": "Engaged with AI PM candidates last month",
+      "certifications": ["AIRS Certified"]
+    }
+  },
+  {
+    "name": "Rachel Goldberg",
+    "role": "Talent Partner - Research & Engineering",
+    "company": "OpenAI",
+    "profile_url": "https://linkedin.com/in/rachelgoldberg-openai",
+    "source": "web_search",
+    "confidence_score": 0.87,
+    "additional_info": {
+      "recent_activity": "Spoke at AI recruiting conference",
+      "focus_areas": ["Research Scientists", "Data Scientists"],
+      "hiring_volume": "High"
+    }
+  },
+  {
+    "name": "David Lee",
+    "role": "Technical Recruiter - GPU & AI Hardware",
+    "company": "Nvidia",
+    "profile_url": "https://linkedin.com/in/davidlee-nvidia",
+    "source": "linkedin",
+    "confidence_score": 0.84,
+    "additional_info": {
+      "department": "Hardware Engineering",
+      "specialization": "Chip design and verification",
+      "location": "Santa Clara, CA"
+    }
+  },
+  {
+    "name": "Amanda Torres",
+    "role": "Engineering Recruiter - AI Infrastructure",
+    "company": "Meta",
+    "profile_url": "https://linkedin.com/in/amandatorres-meta",
+    "source": "linkedin",
+    "confidence_score": 0.89,
+    "additional_info": {
+      "department": "Infrastructure",
+      "focus_areas": ["Distributed Systems", "ML Platform"],
+      "years_at_company": 3
+    }
+  },
+  {
+    "name": "John Park",
+    "role": "ML/AI Recruiter - Siri & Speech",
+    "company": "Apple",
+    "profile_url": null,
+    "source": "inferred",
+    "confidence_score": 0.65,
+    "additional_info": {
+      "note": "Likely recruiter based on job posting patterns",
+      "verification_status": "unverified"
+    }
+  },
+  {
+    "name": "Lisa Zhang",
+    "role": "Recruiting Lead - Autopilot Team",
+    "company": "Tesla",
+    "profile_url": "https://linkedin.com/in/lisazhang-tesla",
+    "source": "linkedin",
+    "confidence_score": 0.80,
+    "additional_info": {
+      "department": "Autopilot Engineering",
+      "team_focus": "Computer Vision & Perception",
+      "location": "Palo Alto, CA"
+    }
+  },
+  {
+    "name": "Thomas Müller",
+    "role": "Head of Talent - Engineering",
+    "company": "Hugging Face",
+    "profile_url": "https://linkedin.com/in/thomasmuller-hf",
+    "source": "linkedin",
+    "confidence_score": 0.93,
+    "additional_info": {
+      "department": "Engineering",
+      "company_size": "Growing startup",
+      "culture_note": "Open-source focused, remote-friendly"
+    }
+  }
+]

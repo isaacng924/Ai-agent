@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Job Connector Agent Input Schema",
+  "description": "Input schema for AgentCore invocation of the Job Connector Agent",
+  "type": "object",
+  "required": ["job_postings"],
+  "properties": {
+    "job_postings": {
+      "type": "array",
+      "description": "List of job postings to find HR contacts for",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/JobPosting"
+      }
+    },
+    "options": {
+      "type": "object",
+      "description": "Optional processing options",
+      "properties": {
+        "include_messages": {
+          "type": "boolean",
+          "description": "Whether to generate outreach messages (P4 feature)",
+          "default": false
+        },
+        "message_tone": {
+          "type": "string",
+          "enum": ["professional", "friendly", "formal", "enthusiastic"],
+          "description": "Tone for generated messages (if include_messages=true)",
+          "default": "professional"
+        },
+        "max_concurrent": {
+          "type": "integer",
+          "description": "Maximum concurrent contact searches",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "output_format": {
+          "type": "string",
+          "enum": ["json", "csv"],
+          "description": "Desired output format",
+          "default": "json"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JobPosting": {
+      "type": "object",
+      "required": ["company_name", "job_title"],
+      "properties": {
+        "company_name": {
+          "type": "string",
+          "description": "Official company name",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "job_title": {
+          "type": "string",
+          "description": "Job title or role name",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional job description for better context",
+          "maxLength": 5000
+        },
+        "job_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional URL to the job posting"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "job_postings": [
+        {
+          "company_name": "Anthropic",
+          "job_title": "AI Safety Researcher",
+          "description": "Research alignment techniques for large language models",
+          "job_url": "https://anthropic.com/careers/ai-safety-researcher"
+        },
+        {
+          "company_name": "TechCorp",
+          "job_title": "Senior Software Engineer"
+        }
+      ],
+      "options": {
+        "include_messages": false,
+        "max_concurrent": 3,
+        "output_format": "json"
+      }
+    }
+  ]
+}

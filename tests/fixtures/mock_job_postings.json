@@ -1,0 +1,62 @@
+[
+  {
+    "company_name": "Anthropic",
+    "job_title": "AI Safety Researcher",
+    "description": "Work on cutting-edge AI safety research focused on alignment and interpretability of large language models. Collaborate with world-class researchers to make AI systems more reliable and beneficial.",
+    "job_url": "https://anthropic.com/careers/ai-safety-researcher"
+  },
+  {
+    "company_name": "Amazon Web Services",
+    "job_title": "Senior Software Engineer - Machine Learning",
+    "description": "Build scalable machine learning infrastructure for AWS services. Work with distributed systems, deep learning frameworks, and cloud architecture.",
+    "job_url": "https://amazon.jobs/en/jobs/12345/senior-software-engineer"
+  },
+  {
+    "company_name": "Google DeepMind",
+    "job_title": "Research Scientist - Reinforcement Learning",
+    "description": "Conduct fundamental research in reinforcement learning and develop novel algorithms for complex decision-making problems.",
+    "job_url": null
+  },
+  {
+    "company_name": "Microsoft",
+    "job_title": "Product Manager - AI",
+    "description": "Lead product strategy for AI-powered features in Microsoft 365. Define roadmap and work cross-functionally with engineering and design teams.",
+    "job_url": "https://careers.microsoft.com/us/en/job/1234567"
+  },
+  {
+    "company_name": "OpenAI",
+    "job_title": "Data Scientist",
+    "description": "Analyze large-scale datasets to improve model performance and understand user interactions with AI systems.",
+    "job_url": null
+  },
+  {
+    "company_name": "Nvidia",
+    "job_title": "Senior Hardware Engineer - AI Chips",
+    "description": "Design next-generation AI accelerators and GPUs. Work on architecture, verification, and performance optimization.",
+    "job_url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite"
+  },
+  {
+    "company_name": "Meta",
+    "job_title": "Software Engineer - Infrastructure",
+    "description": "Build and scale infrastructure for Meta's AI research and production systems. Work with PyTorch, distributed training, and data pipelines.",
+    "job_url": null
+  },
+  {
+    "company_name": "Apple",
+    "job_title": "Machine Learning Engineer - Siri",
+    "description": "Develop and deploy ML models for Siri's natural language understanding and generation capabilities.",
+    "job_url": "https://jobs.apple.com/en-us/details/200123456"
+  },
+  {
+    "company_name": "Tesla",
+    "job_title": "Computer Vision Engineer - Autopilot",
+    "description": "Work on computer vision algorithms for Tesla's autonomous driving system. Train and deploy models on custom AI chips.",
+    "job_url": null
+  },
+  {
+    "company_name": "Hugging Face",
+    "job_title": "ML Research Engineer",
+    "description": "Build open-source ML tools and libraries. Contribute to Transformers, Datasets, and other popular frameworks.",
+    "job_url": "https://apply.workable.com/huggingface/"
+  }
+]

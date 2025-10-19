@@ -1,0 +1,264 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Job Connector Agent Output Schema",
+  "description": "Output schema for Job Connector Agent results",
+  "type": "object",
+  "required": ["batch_id", "status", "results"],
+  "properties": {
+    "batch_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this batch job"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "partially_completed", "failed"],
+      "description": "Overall batch processing status"
+    },
+    "results": {
+      "type": "array",
+      "description": "Search results for each job posting",
+      "items": {
+        "$ref": "#/definitions/SearchResult"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "Summary statistics for the batch",
+      "properties": {
+        "total_postings": {
+          "type": "integer",
+          "description": "Total number of job postings processed",
+          "minimum": 0
+        },
+        "successful_discoveries": {
+          "type": "integer",
+          "description": "Number of postings where HR contact was found",
+          "minimum": 0
+        },
+        "failed_discoveries": {
+          "type": "integer",
+          "description": "Number of postings where no contact was found",
+          "minimum": 0
+        },
+        "average_confidence": {
+          "type": "number",
+          "description": "Average confidence score for successful discoveries",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "total_duration_seconds": {
+          "type": "number",
+          "description": "Total processing time for the batch",
+          "minimum": 0.0
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Batch creation timestamp (ISO 8601 UTC)"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Batch completion timestamp (ISO 8601 UTC)"
+    }
+  },
+  "definitions": {
+    "SearchResult": {
+      "type": "object",
+      "required": ["job_posting", "reasoning", "search_duration_seconds", "timestamp"],
+      "properties": {
+        "job_posting": {
+          "$ref": "#/definitions/JobPosting"
+        },
+        "hr_contact": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/HRContact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Discovered HR contact (null if not found)"
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "Explanation of contact selection or why none found",
+          "minLength": 10,
+          "maxLength": 1000
+        },
+        "search_duration_seconds": {
+          "type": "number",
+          "description": "Time taken for this search",
+          "minimum": 0.0
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this search was performed (ISO 8601 UTC)"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error message if search failed"
+        },
+        "suggestions": {
+          "type": "array",
+          "description": "Suggestions for user if no contact found",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outreach_message": {
+          "$ref": "#/definitions/OutreachMessage",
+          "description": "Generated outreach message (if requested)"
+        }
+      }
+    },
+    "JobPosting": {
+      "type": "object",
+      "required": ["company_name", "job_title"],
+      "properties": {
+        "company_name": {
+          "type": "string",
+          "description": "Official company name",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "job_title": {
+          "type": "string",
+          "description": "Job title or role name",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional job description",
+          "maxLength": 5000
+        },
+        "job_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional job posting URL"
+        }
+      }
+    },
+    "HRContact": {
+      "type": "object",
+      "required": ["name", "role", "company", "source", "confidence_score"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the HR contact",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "role": {
+          "type": "string",
+          "description": "Job title at the company",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "company": {
+          "type": "string",
+          "description": "Company name",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "profile_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "LinkedIn or professional network URL"
+        },
+        "source": {
+          "type": "string",
+          "enum": ["linkedin", "company_website", "web_search", "cached", "inferred"],
+          "description": "How this contact was discovered"
+        },
+        "confidence_score": {
+          "type": "number",
+          "description": "Confidence in contact relevance (0.0-1.0)",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "additional_info": {
+          "type": "object",
+          "description": "Optional metadata about the contact",
+          "additionalProperties": true
+        }
+      }
+    },
+    "OutreachMessage": {
+      "type": "object",
+      "required": ["subject", "body", "tone", "channel"],
+      "properties": {
+        "subject": {
+          "type": "string",
+          "description": "Email subject or LinkedIn message title",
+          "minLength": 5,
+          "maxLength": 200
+        },
+        "body": {
+          "type": "string",
+          "description": "Message content",
+          "minLength": 50,
+          "maxLength": 2000
+        },
+        "tone": {
+          "type": "string",
+          "enum": ["professional", "friendly", "formal", "enthusiastic"],
+          "description": "Message tone style"
+        },
+        "channel": {
+          "type": "string",
+          "enum": ["linkedin", "email", "generic"],
+          "description": "Intended delivery channel"
+        },
+        "personalization_notes": {
+          "type": "string",
+          "description": "Notes on personalization elements used"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "batch_id": "550e8400-e29b-41d4-a716-446655440000",
+      "status": "completed",
+      "results": [
+        {
+          "job_posting": {
+            "company_name": "Anthropic",
+            "job_title": "AI Safety Researcher"
+          },
+          "hr_contact": {
+            "name": "Jane Smith",
+            "role": "Engineering Recruiter",
+            "company": "Anthropic",
+            "profile_url": "https://linkedin.com/in/janesmith",
+            "source": "linkedin",
+            "confidence_score": 0.9,
+            "additional_info": {
+              "department": "Engineering",
+              "recent_activity": "Posted about AI hiring 2 weeks ago"
+            }
+          },
+          "reasoning": "Jane Smith is Anthropic's Engineering Recruiter with a focus on AI research roles. Recent LinkedIn activity shows posts about hiring for the safety team.",
+          "search_duration_seconds": 12.5,
+          "timestamp": "2025-10-12T14:30:00Z"
+        }
+      ],
+      "summary": {
+        "total_postings": 1,
+        "successful_discoveries": 1,
+        "failed_discoveries": 0,
+        "average_confidence": 0.9,
+        "total_duration_seconds": 12.5
+      },
+      "created_at": "2025-10-12T14:29:45Z",
+      "completed_at": "2025-10-12T14:30:05Z"
+    }
+  ]
+}
