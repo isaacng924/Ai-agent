@@ -74,6 +74,7 @@ outputs/
 
 # Test and batch result files (may contain sensitive data)
 *_results.json
+*_results.csv
 batch_jobs.json
 test_batch.json
 test_results.json

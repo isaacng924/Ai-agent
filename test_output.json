@@ -1,0 +1,46 @@
+{
+  "batch_id": "ab8459ff-ed9e-4310-9a75-19f063e96826",
+  "status": "partially_completed",
+  "total_jobs": 2,
+  "successful": 1,
+  "failed": 1,
+  "created_at": "2025-10-19T14:50:06.257146+00:00",
+  "completed_at": "2025-10-19T14:50:31.509845+00:00",
+  "results": [
+    {
+      "job_posting": {
+        "company_name": "Google",
+        "job_title": "Software Engineer",
+        "description": null,
+        "job_url": null
+      },
+      "hr_contact": {
+        "name": "Joanna Perlman",
+        "role": "Google Recruiter",
+        "company": "Google",
+        "profile_url": "https://www.linkedin.com/in/joanna-perlman",
+        "source": "web_search",
+        "confidence_score": 0.9,
+        "additional_info": {
+          "raw_response": "Based on the search results, I've found a highly relevant HR contact for the Software Engineer position at Google. Here's the structured information:\n\n- Contact name and role: Joanna Perlman - Google Recruiter\n- Profile URL: https://www.linkedin.com/in/joanna-perlman\n- Confidence score: 0.9\n- Reason",
+          "parsing_method": "text_extraction"
+        }
+      },
+      "reasoning": "Based on the search results, I've found a highly relevant HR contact for the Software Engineer position at Google. Here's the structured information:\n\n- Contact name and role: Joanna Perlman - Google Recruiter\n- Profile URL: https://www.linkedin.com/in/joanna-perlman\n- Confidence score: 0.9\n- Reasoning for why this contact is most relevant: Joanna Perlman is specifically described as a \"Google Recruiter\" who is \"Specialized recruiter for Engineering Productivity, responsible for sourcing and hiring top talent across key engineering disciplines: Software Engineering\". This makes her an ideal contact for a Software Engineer position at Google.\n- Source of information: LinkedIn\n\nReasoning for the high confidence score (0.9):\n1. Current employee: Joanna is described as a current Google Recruiter.\n2. Relevant specialization: She specifically focuses on recruiting for Software Engineering roles.\n3. Direct match: Her responsibilities align perfectly with the job seeker's target position (Software Engineer at Google).\n4. Recent and active profile: The information comes from a LinkedIn profile, which is likely to be up-to-date.\n\nThis contact appears to be an excellent match for someone seeking a Software Engineer position at Google. Joanna Perlman's specialization in recruiting for Engineering Productivity and Software Engineering roles makes her a highly relevant point of contact for this job opportunity.\n\nIf you decide to reach out to Joanna Perlman, consider crafting a personalized message that mentions your interest in Software Engineering roles at Google and any relevant experience or skills you have that align with Google's Engineering Productivity team.",
+      "search_duration_seconds": 13.008244,
+      "error_message": null
+    },
+    {
+      "job_posting": {
+        "company_name": "Microsoft",
+        "job_title": "Product Manager",
+        "description": null,
+        "job_url": null
+      },
+      "hr_contact": null,
+      "reasoning": "Search failed due to technical error",
+      "search_duration_seconds": 10.195365,
+      "error_message": "An error occurred (ThrottlingException) when calling the InvokeModel operation (reached max retries: 4): Too many requests, please wait before trying again."
+    }
+  ]
+}

@@ -68,22 +68,32 @@ python -m src.cli.main process \\
   --title "AI Safety Researcher"
 ```
 
-#### Process Batch
+#### Process Batch (JSON Output)
 
 ```bash
 python -m src.cli.main batch \\
-  --input examples/input_batch.json \\
+  --file examples/input_batch.json \\
   --output results.json
 ```
 
-#### Generate Outreach Messages
+#### Process Batch (CSV Output for CRM)
 
 ```bash
 python -m src.cli.main batch \\
-  --input examples/input_batch.json \\
-  --generate-messages \\
-  --tone professional
+  --file examples/input_batch.json \\
+  --output results.csv \\
+  --format csv
 ```
+
+#### Process Batch (Both JSON and CSV)
+
+```bash
+python -m src.cli.main batch \\
+  --file examples/input_batch.json \\
+  --output results \\
+  --format both
+```
+This creates `results.json` and `results.csv` - perfect for importing into your CRM!
 
 ## Architecture
 

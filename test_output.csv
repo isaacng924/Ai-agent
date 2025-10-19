@@ -1,0 +1,7 @@
+Company,Job Title,Contact Found,Contact Name,Contact Role,LinkedIn URL,Confidence Score,Source,Search Duration (s),Reasoning,Status,Error Message
+Google,Software Engineer,Yes,Joanna Perlman,Google Recruiter,https://www.linkedin.com/in/joanna-perlman,0.90,web_search,13.01,"Based on the search results, I've found a highly relevant HR contact for the Software Engineer position at Google. Here's the structured information:
+
+- Contact name and role: Joanna Perlman - Google ...",Success,
+Microsoft,Product Manager,No,,,,,,10.20,Search failed due to technical error,Error,"An error occurred (ThrottlingException) when calling the InvokeModel operation (reached max retries: 4): Too many requests, please wait before trying again."
+
+SUMMARY,Total: 2,Successful: 1,Failed: 1,Status: partially_completed,,,,,,,

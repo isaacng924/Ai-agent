@@ -2,6 +2,7 @@
 
 import click
 import json
+import csv
 import logging
 from pathlib import Path
 from typing import Optional
@@ -148,9 +149,15 @@ def search(
     "--output",
     "-o",
     type=click.Path(),
-    help="Output file for batch results (JSON)",
+    help="Output file for batch results (JSON or CSV, determined by extension)",
 )
-def batch(file: str, output: Optional[str]):
+@click.option(
+    "--format",
+    type=click.Choice(["json", "csv", "both"], case_sensitive=False),
+    default="json",
+    help="Output format: json, csv, or both",
+)
+def batch(file: str, output: Optional[str], format: str):
     """
     Process multiple job postings from a JSON file.
 
@@ -221,8 +228,24 @@ def batch(file: str, output: Optional[str]):
 
     # Save results if requested
     if output:
-        _save_batch_to_file(batch_job, output)
-        console.print(f"\n[green]Batch results saved to {output}[/green]")
+        output_path = Path(output)
+
+        # Determine format from extension or flag
+        if format == "both":
+            # Save both formats
+            json_path = output_path.with_suffix('.json')
+            csv_path = output_path.with_suffix('.csv')
+            _save_batch_to_file(batch_job, str(json_path))
+            _save_batch_to_csv(batch_job, str(csv_path))
+            console.print(f"\n[green]Results saved to:[/green]")
+            console.print(f"  - JSON: {json_path}")
+            console.print(f"  - CSV: {csv_path}")
+        elif format == "csv" or output_path.suffix.lower() == '.csv':
+            _save_batch_to_csv(batch_job, output)
+            console.print(f"\n[green]Batch results saved to {output} (CSV)[/green]")
+        else:
+            _save_batch_to_file(batch_job, output)
+            console.print(f"\n[green]Batch results saved to {output} (JSON)[/green]")
 
 
 @cli.command()
@@ -405,6 +428,70 @@ def _save_batch_to_file(batch_job: BatchJob, filepath: str):
 
     with open(filepath, "w") as f:
         json.dump(output_data, f, indent=2)
+
+
+def _save_batch_to_csv(batch_job: BatchJob, filepath: str):
+    """Save batch job results to CSV file."""
+    with open(filepath, "w", newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+
+        # Write header
+        writer.writerow([
+            "Company",
+            "Job Title",
+            "Contact Found",
+            "Contact Name",
+            "Contact Role",
+            "LinkedIn URL",
+            "Confidence Score",
+            "Source",
+            "Search Duration (s)",
+            "Reasoning",
+            "Status",
+            "Error Message"
+        ])
+
+        # Write data rows
+        for result in batch_job.results:
+            contact_found = "Yes" if result.hr_contact else "No"
+            contact_name = result.hr_contact.name if result.hr_contact else ""
+            contact_role = result.hr_contact.role if result.hr_contact else ""
+            profile_url = str(result.hr_contact.profile_url) if result.hr_contact and result.hr_contact.profile_url else ""
+            confidence = f"{result.hr_contact.confidence_score:.2f}" if result.hr_contact else ""
+            source = result.hr_contact.source.value if result.hr_contact else ""
+            status = "Success" if result.hr_contact else ("Error" if result.error_message else "No Contact Found")
+
+            writer.writerow([
+                result.job_posting.company_name,
+                result.job_posting.job_title,
+                contact_found,
+                contact_name,
+                contact_role,
+                profile_url,
+                confidence,
+                source,
+                f"{result.search_duration_seconds:.2f}",
+                result.reasoning[:200] + "..." if len(result.reasoning) > 200 else result.reasoning,
+                status,
+                result.error_message or ""
+            ])
+
+        # Write summary row
+        writer.writerow([])  # Empty row
+        writer.writerow([
+            "SUMMARY",
+            f"Total: {len(batch_job.job_postings)}",
+            f"Successful: {len(batch_job.results) - batch_job.error_count}",
+            f"Failed: {batch_job.error_count}",
+            f"Status: {batch_job.status.value}",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ])
 
 
 if __name__ == "__main__":
