@@ -15,7 +15,8 @@ The AI Job Connector Agent automates job search outreach by intelligently findin
 - **🔍 Smart Contact Discovery**: Automatically finds relevant HR contacts for job postings using web search
 - **🧠 Intelligent Reasoning**: Explains WHY each contact was selected with contextual insights
 - **⚡ Batch Processing**: Process 10-50 job postings concurrently with progress tracking
-- **📧 Message Generation**: Creates personalized LinkedIn/email outreach messages
+- **📧 Message Generation**: Creates personalized LinkedIn/email outreach messages based on your CV
+- **🌐 Web UI**: Simple drag-and-drop interface for CV upload and job processing
 - **📊 Export Options**: Output results as JSON or CSV for CRM integration
 - **☁️ AWS Native**: Built on AWS Bedrock AgentCore with Claude 3.5 Sonnet
 
@@ -60,15 +61,41 @@ cp .env.example .env
 
 ### Usage
 
-#### Process Single Job Posting
+#### Option 1: Web UI (Recommended)
+
+The easiest way to use the AI Job Connector is through the web interface:
 
 ```bash
-python -m src.cli.main process \\
+# Launch web UI
+make web
+
+# Or directly:
+streamlit run src/web/app.py
+```
+
+Then open your browser to `http://localhost:8501` and:
+1. **Upload your CV** (PDF, TXT, or DOCX)
+2. **Add job listings** (manually or upload JSON)
+3. **Click "Start Processing"** to find contacts and generate messages
+4. **Download results** as CSV or JSON
+
+The web UI automatically:
+- Parses your CV to extract skills and experience
+- Finds HR contacts for each job
+- Generates personalized outreach messages
+- Provides copy-paste ready messages for each contact
+
+#### Option 2: Command Line Interface
+
+##### Process Single Job Posting
+
+```bash
+python -m src.cli.main search \\
   --company "Anthropic" \\
   --title "AI Safety Researcher"
 ```
 
-#### Process Batch (JSON Output)
+##### Process Batch (JSON Output)
 
 ```bash
 python -m src.cli.main batch \\
@@ -76,7 +103,7 @@ python -m src.cli.main batch \\
   --output results.json
 ```
 
-#### Process Batch (CSV Output for CRM)
+##### Process Batch (CSV Output for CRM)
 
 ```bash
 python -m src.cli.main batch \\
@@ -85,7 +112,7 @@ python -m src.cli.main batch \\
   --format csv
 ```
 
-#### Process Batch (Both JSON and CSV)
+##### Process Batch (Both JSON and CSV)
 
 ```bash
 python -m src.cli.main batch \\
@@ -132,7 +159,8 @@ ai-agent/
 │   ├── agent/          # AgentCore runtime and orchestration
 │   ├── tools/          # Gateway tools (HR lookup, web search)
 │   ├── models/         # Pydantic data models
-│   ├── services/       # Business logic
+│   ├── services/       # Business logic (CV parsing, message generation)
+│   ├── web/            # Streamlit web UI
 │   ├── cli/            # Command-line interface
 │   └── utils/          # AWS clients, configuration
 ├── infra/cdk/          # AWS CDK infrastructure
@@ -170,6 +198,9 @@ make deploy
 ### Local Development
 
 ```bash
+# Launch web UI
+make web
+
 # Run with mock data (no API calls)
 make demo
 

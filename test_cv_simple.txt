@@ -1,0 +1,26 @@
+John Doe
+john.doe@example.com
++1-555-123-4567
+
+PROFESSIONAL SUMMARY
+Experienced software engineer with 5+ years in full-stack development, specializing in Python, AWS, and machine learning applications.
+
+SKILLS
+Python, AWS, React, Docker, Kubernetes, SQL, PostgreSQL, Machine Learning, TensorFlow, Git
+
+EXPERIENCE
+
+Senior Software Engineer, TechCorp
+2020 - Present
+- Led development of cloud-native applications on AWS
+- Implemented ML pipelines for data processing
+- Mentored junior developers
+
+Software Engineer, StartupXYZ
+2018 - 2020
+- Built React-based web applications
+- Developed RESTful APIs with Python/Flask
+- Deployed containerized applications with Docker
+
+EDUCATION
+B.S. Computer Science, MIT, 2018

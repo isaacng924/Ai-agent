@@ -56,6 +56,9 @@ logs: ## Tail CloudWatch logs (requires AWS CLI)
 demo: ## Run demo with mock data
 	python -m src.cli.main --mock demo
 
+web: ## Launch web UI
+	streamlit run src/web/app.py --server.port 8501 --server.address localhost
+
 run-single: ## Run single job posting example
 	python -m src.cli.main process --company "Anthropic" --title "AI Safety Researcher"
 

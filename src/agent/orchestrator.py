@@ -8,8 +8,10 @@ from datetime import datetime, timezone
 from src.models.batch_job import BatchJob
 from src.models.job_posting import JobPosting
 from src.models.search_result import SearchResult
+from src.models.cv_profile import CVProfile
 from src.models import BatchStatus
 from src.agent.runtime import AgentRuntime
+from src.services.message_generator import MessageGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +20,10 @@ def process_batch_job(
     batch_job: BatchJob,
     agent_runtime: AgentRuntime = None,
     progress_callback: Optional[Callable[[int, int, SearchResult], None]] = None,
+    cv_profile: Optional[CVProfile] = None,
+    message_tone: str = "professional",
+    message_channel: str = "linkedin",
+    message_length: str = "medium",
 ) -> BatchJob:
     """
     Process a batch job by discovering HR contacts for all job postings.
@@ -26,12 +32,26 @@ def process_batch_job(
         batch_job: BatchJob to process
         agent_runtime: Optional AgentRuntime instance (creates new if not provided)
         progress_callback: Optional callback function(current, total, result) for progress updates
+        cv_profile: Optional CV profile for generating personalized messages
+        message_tone: Tone for generated messages (professional, friendly, formal, enthusiastic)
+        message_channel: Channel for messages (linkedin, email, generic)
+        message_length: Message length (short, medium, long)
 
     Returns:
         Updated BatchJob with results and status
     """
     if agent_runtime is None:
         agent_runtime = AgentRuntime()
+
+    # Initialize message generator if CV profile provided
+    message_generator = None
+    if cv_profile:
+        try:
+            message_generator = MessageGenerator()
+            logger.info("Message generation enabled with CV profile")
+        except Exception as e:
+            logger.warning(f"Failed to initialize message generator: {str(e)}")
+            message_generator = None
 
     logger.info(
         f"Starting batch job {batch_job.id} with {len(batch_job.job_postings)} job postings"
@@ -58,6 +78,24 @@ def process_batch_job(
                 job_posting=job_posting,
                 session_id=f"{batch_job.id}-{idx}",
             )
+
+            # Generate personalized message if CV profile provided and contact found
+            if message_generator and result.hr_contact and not result.error_message:
+                try:
+                    logger.info(f"Generating message for {result.hr_contact.name}")
+                    message = message_generator.generate_message(
+                        cv_profile=cv_profile,
+                        job_posting=job_posting,
+                        hr_contact=result.hr_contact,
+                        tone=message_tone,
+                        channel=message_channel,
+                        length=message_length,
+                    )
+                    result.outreach_message = message
+                    logger.info(f"Message generated ({len(message)} chars)")
+                except Exception as e:
+                    logger.warning(f"Failed to generate message: {str(e)}")
+                    result.outreach_message = None
 
             results.append(result)
 

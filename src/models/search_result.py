@@ -69,3 +69,9 @@ class SearchResult(BaseModel):
         None,
         description="Suggestions for user if no contact found",
     )
+
+    outreach_message: Optional[str] = Field(
+        None,
+        description="Personalized outreach message for this contact (if generated)",
+        max_length=5000,
+    )

@@ -447,6 +447,7 @@ def _save_batch_to_csv(batch_job: BatchJob, filepath: str):
             "Source",
             "Search Duration (s)",
             "Reasoning",
+            "Outreach Message",
             "Status",
             "Error Message"
         ])
@@ -461,6 +462,14 @@ def _save_batch_to_csv(batch_job: BatchJob, filepath: str):
             source = result.hr_contact.source.value if result.hr_contact else ""
             status = "Success" if result.hr_contact else ("Error" if result.error_message else "No Contact Found")
 
+            # Format outreach message (truncate if too long for CSV)
+            outreach_message = ""
+            if result.outreach_message:
+                if len(result.outreach_message) > 500:
+                    outreach_message = result.outreach_message[:497] + "..."
+                else:
+                    outreach_message = result.outreach_message
+
             writer.writerow([
                 result.job_posting.company_name,
                 result.job_posting.job_title,
@@ -472,6 +481,7 @@ def _save_batch_to_csv(batch_job: BatchJob, filepath: str):
                 source,
                 f"{result.search_duration_seconds:.2f}",
                 result.reasoning[:200] + "..." if len(result.reasoning) > 200 else result.reasoning,
+                outreach_message,
                 status,
                 result.error_message or ""
             ])
@@ -484,6 +494,7 @@ def _save_batch_to_csv(batch_job: BatchJob, filepath: str):
             f"Successful: {len(batch_job.results) - batch_job.error_count}",
             f"Failed: {batch_job.error_count}",
             f"Status: {batch_job.status.value}",
+            "",
             "",
             "",
             "",
