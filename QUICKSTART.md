@@ -183,6 +183,53 @@ mypy src/
 ruff check .
 ```
 
+## Deploy to AWS
+
+### Quick Deployment (5 Minutes)
+
+Deploy the Streamlit web UI to AWS App Runner:
+
+```bash
+./deploy.sh
+```
+
+The script will:
+1. Check prerequisites (AWS credentials, Docker)
+2. Build and push Docker image
+3. Deploy to AWS App Runner via CDK
+4. Provide your app URL
+
+**Manual deployment:**
+
+```bash
+# One command
+make deploy-full
+
+# Or step by step
+make install-cdk
+make deploy
+make get-url
+```
+
+**See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment guide.**
+
+### Deployment Commands
+
+```bash
+make docker-build   # Build Docker image locally
+make docker-run     # Test Docker container locally
+make deploy-full    # Full deployment (CDK + App Runner)
+make get-url        # Get deployed app URL
+make status         # Check deployment status
+make destroy        # Delete all AWS resources
+```
+
+### Estimated Costs
+
+- **Development:** ~$5/month
+- **Production (low traffic):** ~$10-20/month
+- Auto-scales with usage
+
 ## Next Steps
 
 ### For Development

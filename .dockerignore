@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Git
+.git/
+.gitignore
+
+# Environment files (will be set via CDK)
+.env
+.env.local
+
+# Documentation
+*.md
+docs/
+
+# Specs and planning
+specs/
+.specify/
+.claude/
+
+# CDK and infrastructure
+infra/
+cdk.out/
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# JSON data files (not needed in container)
+*.json
+!package*.json
+
+# Temporary files
+tmp/
+temp/
+*.log
+
+# macOS
+.DS_Store
