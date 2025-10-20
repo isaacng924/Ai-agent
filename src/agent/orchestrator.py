@@ -116,8 +116,9 @@ def process_batch_job(
                 progress_callback(idx + 1, len(batch_job.job_postings), result)
 
             # Add delay between requests to avoid rate limiting (except for last job)
+            # Increased delay to reduce throttling risk
             if idx < len(batch_job.job_postings) - 1:
-                time.sleep(2)  # 2 second delay between jobs
+                time.sleep(3)  # 3 second delay between jobs
 
         except Exception as e:
             logger.error(

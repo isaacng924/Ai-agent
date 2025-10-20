@@ -76,9 +76,10 @@ class ECSFargateStack(Stack):
 
         # Get environment variables from context or use defaults
         tavily_api_key = self.node.try_get_context("tavily_api_key") or os.environ.get("TAVILY_API_KEY", "")
-        aws_region = self.region or "us-east-1"
+        aws_region = self.region or "eu-west-1"
+        # Use cross-region inference profile for eu-west-1 (required for on-demand throughput)
         bedrock_model_id = self.node.try_get_context("bedrock_model_id") or os.environ.get(
-            "BEDROCK_MODEL_ID", "anthropic.claude-3-5-sonnet-20241022-v2:0"
+            "BEDROCK_MODEL_ID", "eu.anthropic.claude-3-5-sonnet-20240620-v1:0"
         )
 
         # Create Fargate Service with Application Load Balancer

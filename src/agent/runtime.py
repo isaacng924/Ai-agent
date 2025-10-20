@@ -2,8 +2,10 @@
 
 import json
 import logging
+import time
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
+from botocore.exceptions import ClientError
 
 from src.utils.config import get_config
 from src.utils.aws_clients import get_bedrock_runtime_client
@@ -47,6 +49,52 @@ class AgentRuntime:
         logger.info(
             f"Initialized AgentRuntime with model: {self.config.bedrock_model_id}"
         )
+
+    def _invoke_with_retry(self, invoke_func, max_retries=5):
+        """
+        Invoke a Bedrock function with exponential backoff retry logic.
+
+        Args:
+            invoke_func: Function to invoke (should return response)
+            max_retries: Maximum number of retry attempts
+
+        Returns:
+            Response from invoke_func
+
+        Raises:
+            Exception: If all retries are exhausted
+        """
+        for attempt in range(max_retries):
+            try:
+                return invoke_func()
+            except ClientError as e:
+                error_code = e.response.get('Error', {}).get('Code', '')
+
+                # Check if it's a throttling error
+                if error_code in ['ThrottlingException', 'TooManyRequestsException', 'ServiceUnavailable']:
+                    if attempt < max_retries - 1:
+                        # Calculate exponential backoff: 2^attempt * base_delay
+                        base_delay = 2
+                        delay = (2 ** attempt) * base_delay + (time.time() % 1)  # Add jitter
+                        logger.warning(
+                            f"Throttling detected (attempt {attempt + 1}/{max_retries}). "
+                            f"Retrying in {delay:.2f} seconds..."
+                        )
+                        time.sleep(delay)
+                        continue
+                    else:
+                        logger.error(f"Max retries ({max_retries}) exhausted due to throttling")
+                        raise
+                else:
+                    # Non-throttling error, raise immediately
+                    logger.error(f"Non-throttling error: {error_code}")
+                    raise
+            except Exception as e:
+                # Non-ClientError exceptions, raise immediately
+                logger.error(f"Unexpected error: {str(e)}")
+                raise
+
+        raise Exception("Failed to invoke after all retries")
 
     def discover_contact(
         self, job_posting: JobPosting, session_id: Optional[str] = None
@@ -231,10 +279,12 @@ class AgentRuntime:
                 "tools": tools,
             }
 
-            # Invoke model
-            response = bedrock_runtime.invoke_model(
-                modelId=model_id,
-                body=json.dumps(request_body),
+            # Invoke model with retry logic
+            response = self._invoke_with_retry(
+                lambda: bedrock_runtime.invoke_model(
+                    modelId=model_id,
+                    body=json.dumps(request_body),
+                )
             )
 
             # Parse response
